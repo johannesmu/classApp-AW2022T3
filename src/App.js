@@ -1,15 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
 import {Header} from './components/Header'
+import {Footer} from './components/Footer'
 
 function App() {
   return (
     <div className="App">
-      {/* <nav className="navbar bg-light">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">App</a>
-        </div>
-      </nav> */}
       <Header title="My app" />
       <div className="container-fluid">
         <div className="row">
@@ -24,11 +20,7 @@ function App() {
           </div>
         </div>
       </div>
-      <footer>
-        <div className="container-fluid">
-          <p>Footer</p>
-        </div>
-      </footer>
+      <Footer year="2022" />
     </div>
   );
 }
