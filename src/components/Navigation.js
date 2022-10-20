@@ -10,11 +10,13 @@ export function Navigation ( props ) {
     }, [ props.items ] )
 
     if ( navItems.length > 0 ) {
+        // NavLinks collection return html code for each item in the array
         const NavLinks = navItems.map( ( item ) => {
             return(
                 <a href={item.path} className="nav-link">{ item.name }</a>
             )
         })
+        
         return (
             <nav className="navbar-nav me-auto mb-2 mb-lg-0">
                 { NavLinks }
