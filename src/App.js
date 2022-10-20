@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import {Header} from './components/Header'
 import {Footer} from './components/Footer'
-import { Routes, Route, Outlet, Link  } from 'react-router-dom';
+import { Routes, Route  } from 'react-router-dom';
 // import page components
 import { Home } from './pages/Home'
 import { Contact } from './pages/Contact'
