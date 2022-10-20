@@ -6,7 +6,7 @@ export function Header(props) {
             <div className="container-fluid">
                 <a className="navbar-brand" href="#">{ props.title }</a>
                 <div className="collapse navbar-collapse">
-                    <Navigation />
+                    <Navigation items={ props.headernav } />
                 </div>
             </div>
         </header>

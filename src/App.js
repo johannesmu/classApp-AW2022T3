@@ -3,10 +3,16 @@ import './App.css';
 import {Header} from './components/Header'
 import {Footer} from './components/Footer'
 
+const NavData = [
+  { name: "Home", path: "/", public: true },
+  { name: "About", path: "/about", public: true },
+  { name: "Contact", path: "/contact", public: true }
+]
+
 function App() {
   return (
     <div className="App">
-      <Header title="My app" />
+      <Header title="My app" headernav={ NavData } />
       <div className="container-fluid">
         <div className="row">
           <div className="col">
