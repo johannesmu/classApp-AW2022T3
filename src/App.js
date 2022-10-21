@@ -8,6 +8,13 @@ import { Home } from './pages/Home'
 import { Contact } from './pages/Contact'
 import { About } from './pages/About'
 
+// import firebase
+import { initializeApp } from "firebase/app"
+import { FirebaseConfig } from './config/FirebaseConfig'
+
+// initialise Firebase
+const app = initializeApp(FirebaseConfig)
+
 const NavData = [
   { name: "Home", path: "/", public: true },
   { name: "About", path: "/about", public: true },
