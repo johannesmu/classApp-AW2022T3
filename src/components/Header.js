@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom"
 export function Header(props) {
     return (
         <nav className="navbar bg-light">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">{ props.title }</a>
+                <Link className="navbar-brand" to="/">{ props.title }</Link>
             </div>
         </nav>
     )
