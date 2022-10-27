@@ -14,7 +14,7 @@ import { initializeApp } from "firebase/app"
 import { FirebaseConfig } from './config/FirebaseConfig'
 
 // initialise Firebase
-const app = initializeApp(FirebaseConfig)
+const FBapp = initializeApp(FirebaseConfig)
 
 const NavData = [
   { name: "Home", path: "/", public: true },
