@@ -12,9 +12,9 @@ export function Navigation ( props ) {
 
     if ( navItems.length > 0 ) {
         // NavigationLinks collection return html code for each item in the array
-        const NavigationLinks = navItems.map( ( item ) => {
+        const NavigationLinks = navItems.map( ( item, itemKey ) => {
             return(
-                <NavLink to={item.path} className="nav-link">{ item.name }</NavLink>
+                <NavLink to={item.path} className="nav-link" key={itemKey} >{ item.name }</NavLink>
             )
         })
 
