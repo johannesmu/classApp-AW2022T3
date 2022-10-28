@@ -26,16 +26,30 @@ export function Signup ( props ) {
         }
      }, [password])
 
+    const submitHandler = ( event ) => {
+        console.log('submit')
+        // stop the form from refreshing the page
+        event.preventDefault()
+        // capture data from form
+        const data = new FormData(event.target)
+        props.handler( data.get("useremail"), data.get("userpw") )
+        .then(() => console.log('success') )
+        .catch((error) => {
+            //console.log(error)
+        })
+    }
+
     return (
         <div className="container">
             <div className="row">
-                <form className="col-md-4 offset-md-4">
+                <form className="col-md-4 offset-md-4" onSubmit={ submitHandler }>
                     <h2>Sign up for an account</h2>
                     <div className="mb-3">
                         <label htmlFor="useremail">Email (valid email address) </label>
                         <input 
                             type="email" 
                             id="useremail" 
+                            name="useremail"
                             placeholder="you@domain.com" 
                             className="form-control" 
                             value={ email }
@@ -47,6 +61,7 @@ export function Signup ( props ) {
                         <input 
                             type="password" 
                             id="userpw" 
+                            name="userpw"
                             placeholder="you@domain.com" 
                             className="form-control" 
                             value={password}
