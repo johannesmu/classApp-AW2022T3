@@ -16,6 +16,7 @@ export function Signup ( props ) {
         else {
             setValidEmail( false )
         }
+        // [email] makes this effect only affected by changes in email
      }, [email] )
 
      useEffect( () => {
@@ -25,6 +26,7 @@ export function Signup ( props ) {
         else {
             setValidPassword( false )
         }
+        // [email] makes this effect only affected by changes in password
      }, [password])
 
     const submitHandler = ( event ) => {
