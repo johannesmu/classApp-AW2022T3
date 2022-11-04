@@ -8,12 +8,13 @@ import { Home } from './pages/Home'
 import { Contact } from './pages/Contact'
 import { About } from './pages/About'
 import { Signup } from './pages/Signup'
+import { Signout } from './pages/Signout'
 
 // import firebase
 import { initializeApp } from "firebase/app"
 import { FirebaseConfig } from './config/FirebaseConfig'
 // import firebase auth
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth"
 
 // initialise Firebase
 const FBapp = initializeApp(FirebaseConfig)
@@ -33,11 +34,21 @@ const signup = (email, password) => {
   })
 }
 
+const signoutuser = () => {
+  return new Promise( (resolve, reject) => {
+    signOut(FBauth)
+    .then(() => resolve(true))
+    .catch((error) => reject(error))
+  })
+ 
+}
+
 const NavData = [
   { name: "Home", path: "/", public: true },
   { name: "About", path: "/about", public: true },
   { name: "Contact", path: "/contact", public: true },
-  { name: "Sign Up", path: "/signup", public: true }
+  { name: "Sign Up", path: "/signup", public: true },
+  { name: "Sign out", path: "/signout", public: true }
 ]
 
 function App() {
@@ -47,13 +58,13 @@ function App() {
   onAuthStateChanged(FBauth, (user) => {
     if (user) {
       // visitor is authenticated
-      console.log( user )
-      setAuth( user )
+      console.log(user)
+      setAuth(user)
     }
     else {
       // if user is null means visitor is not authenticated
-      console.log( 'not signed in' )
-      setAuth( null )
+      console.log('not signed in')
+      setAuth(null)
     }
   })
 
@@ -65,6 +76,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<Signup handler={signup} />} />
+        <Route path="/signout" element={<Signout handler={signoutuser} auth={auth} />} />
       </Routes>
       <Footer year="2022" />
     </div>
