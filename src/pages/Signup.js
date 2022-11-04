@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 export function Signup(props) {
   const [email, setEmail] = useState('')
@@ -100,6 +100,11 @@ export function Signup(props) {
             <div>{error}</div>
           </div>
         </form>
+      </div>
+      <div className="row">
+        <div className="col text-center">
+          <Link className="btn btn-link" to="/signin">Sign in to your account</Link>
+        </div>
       </div>
     </div>
   )

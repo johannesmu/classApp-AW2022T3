@@ -9,12 +9,20 @@ import { Contact } from './pages/Contact'
 import { About } from './pages/About'
 import { Signup } from './pages/Signup'
 import { Signout } from './pages/Signout'
+import { Signin } from './pages/Signin'
 
 // import firebase
 import { initializeApp } from "firebase/app"
 import { FirebaseConfig } from './config/FirebaseConfig'
 // import firebase auth
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth"
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+}
+  from "firebase/auth"
 
 // initialise Firebase
 const FBapp = initializeApp(FirebaseConfig)
@@ -34,13 +42,21 @@ const signup = (email, password) => {
   })
 }
 
+const signin = (email, password ) => {
+  return new Promise( ( resolve, reject ) => {
+    signInWithEmailAndPassword( FBauth, email, password )
+      .then((userCredential) => resolve(userCredential.user) )
+      .catch( (error) => reject(error) )
+  } )
+}
+
 const signoutuser = () => {
-  return new Promise( (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     signOut(FBauth)
-    .then(() => resolve(true))
-    .catch((error) => reject(error))
+      .then(() => resolve(true))
+      .catch((error) => reject(error))
   })
- 
+
 }
 
 const NavData = [
@@ -48,6 +64,7 @@ const NavData = [
   { name: "About", path: "/about", public: true },
   { name: "Contact", path: "/contact", public: true },
   { name: "Sign Up", path: "/signup", public: true },
+  { name: "Sign in", path: "/signin", public: true }
 ]
 
 const NavDataAuth = [
@@ -67,13 +84,13 @@ function App() {
       // visitor is authenticated
       console.log(user)
       setAuth(user)
-      setNav( NavDataAuth )
+      setNav(NavDataAuth)
     }
     else {
       // if user is null means visitor is not authenticated
       console.log('not signed in')
       setAuth(null)
-      setNav( NavData )
+      setNav(NavData)
     }
   })
 
@@ -86,6 +103,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<Signup handler={signup} />} />
         <Route path="/signout" element={<Signout handler={signoutuser} auth={auth} />} />
+        <Route path="/signin" element={<Signin handler={signin} />} />
       </Routes>
       <Footer year="2022" />
     </div>
