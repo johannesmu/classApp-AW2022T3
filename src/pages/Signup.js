@@ -9,6 +9,8 @@ export function Signup(props) {
   const [error, setError] = useState()
   const [success, setSuccess] = useState(false)
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     // check the value of email
     // check if email contains @ and it's not the first character
@@ -57,8 +59,6 @@ export function Signup(props) {
       setError("the email is already in use")
     }
   }
-
-  const navigate = useNavigate();
 
   return (
     <div className="container">

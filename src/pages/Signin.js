@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react'
-import { Link } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
+
 export function Signin(props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [success,setSuccess] = useState(false)
+
+  const navigate = useNavigate()
+
+  useEffect( () => {
+    if( success ) { navigate('/') }
+  })
 
   const submitHandler = (event) => {
     // console.log('submit')
@@ -13,7 +21,7 @@ export function Signin(props) {
     // capture data from form
     const data = new FormData(event.target)
     props.handler(data.get("useremail"), data.get("userpw"))
-      .then(() => console.log('success'))
+      .then(() => setSuccess(true) )
       .catch((error) => {
         //console.log(error)
       
@@ -53,7 +61,7 @@ export function Signin(props) {
               type="submit"
               className="btn btn-primary"
             >
-              Sign up
+             Sign in
             </button>
             
           </div>
