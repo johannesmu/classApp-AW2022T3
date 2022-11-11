@@ -89,9 +89,9 @@ function App() {
 
   useEffect( () => {
     if( data.length == 0 ) {
-      setData( getDataCollection('books') )
+      getDataCollection('books')
     }
-  }, [data] )
+  } )
 
   // an observer to determine user's authentication status
   onAuthStateChanged(FBauth, (user) => {
@@ -117,7 +117,9 @@ function App() {
       item.id = doc.id
       dbItems.push( item )
     })
-    return dbItems
+    setData( dbItems )
+    console.log( dbItems )
+    // return dbItems
   }
 
   

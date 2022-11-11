@@ -3,14 +3,14 @@ export function Home(props) {
   const [pageData, setPageData] = useState([])
 
   useEffect(() => {
-    console.log( props.listData )
     setPageData(props.listData)
-  }, [props.listData])
+    console.log( props.listData )
+  })
 
   if (pageData.length > 0) {
-    const itemCollection = pageData.map((item) => {
+    const itemCollection = pageData.map(( item, key ) => {
       return (
-        <div className="col-md-4">
+        <div className="col-md-4" key={key}>
           <div className="card">
             <div className="card-body">
               <h5 className="card-title">{item.Title}</h5>
@@ -21,16 +21,16 @@ export function Home(props) {
     })
 
     return (
-      <div className="Home">
-        <div className="container">
-          <div className="row">
-            {itemCollection}
-          </div>
+      <div className="container my-4">
+        <div className="row">
+          {itemCollection}
         </div>
       </div>
     )
   }
   else {
-    return null
+    return (
+      <div className="container"></div>
+    )
   }
 }
