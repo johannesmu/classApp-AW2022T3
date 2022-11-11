@@ -14,6 +14,12 @@ import { Signin } from './pages/Signin'
 // import firebase
 import { initializeApp } from "firebase/app"
 import { FirebaseConfig } from './config/FirebaseConfig'
+// import firebase firestore
+import { 
+  getFirestore, 
+  getDocs, 
+  collection 
+} from "firebase/firestore";
 // import firebase auth
 import {
   getAuth,
@@ -28,6 +34,8 @@ import {
 const FBapp = initializeApp(FirebaseConfig)
 // initialise Firebase Auth
 const FBauth = getAuth(FBapp)
+// initialise FireStore Database
+const FBdb = getFirestore(FBapp)
 
 
 // function to create user account
@@ -77,28 +85,48 @@ const NavDataAuth = [
 function App() {
   const [auth, setAuth] = useState()
   const [nav, setNav] = useState(NavData)
+  const [ data, setData ] = useState([])
+
+  useEffect( () => {
+    if( data.length == 0 ) {
+      setData( getDataCollection('books') )
+    }
+  }, [data] )
 
   // an observer to determine user's authentication status
   onAuthStateChanged(FBauth, (user) => {
     if (user) {
       // visitor is authenticated
-      console.log(user)
+      // console.log(user)
       setAuth(user)
       setNav(NavDataAuth)
     }
     else {
       // if user is null means visitor is not authenticated
-      console.log('not signed in')
+      // console.log('not signed in')
       setAuth(null)
       setNav(NavData)
     }
   })
 
+  const getDataCollection = async ( path ) => {
+    const collectionData = await getDocs( collection(FBdb, path ) )
+    let dbItems = []
+    collectionData.forEach( (doc) => {
+      let item = doc.data()
+      item.id = doc.id
+      dbItems.push( item )
+    })
+    return dbItems
+  }
+
+  
+
   return (
     <div className="App">
       <Header title="My app" headernav={nav} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home listData={ data } />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<Signup handler={signup} />} />
