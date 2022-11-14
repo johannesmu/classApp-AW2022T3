@@ -1,7 +1,36 @@
-export function Home( props ) {
-    return(
-        <div className="Home">
-            <h1>Home</h1>
+import { useState, useEffect } from 'react'
+export function Home(props) {
+  const [pageData, setPageData] = useState([])
+
+  useEffect(() => {
+    setPageData(props.listData)
+    console.log( props.listData )
+  })
+
+  if (pageData.length > 0) {
+    const itemCollection = pageData.map(( item, key ) => {
+      return (
+        <div className="col-md-4" key={key}>
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">{item.Title}</h5>
+            </div>
+          </div>
         </div>
+      )
+    })
+
+    return (
+      <div className="container my-4">
+        <div className="row">
+          {itemCollection}
+        </div>
+      </div>
     )
+  }
+  else {
+    return (
+      <div className="container"></div>
+    )
+  }
 }
