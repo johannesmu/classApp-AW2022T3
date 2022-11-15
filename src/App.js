@@ -88,7 +88,7 @@ function App() {
   const [ data, setData ] = useState([])
 
   useEffect( () => {
-    if( data.length == 0 ) {
+    if( data.length === 0 ) {
       getDataCollection('books')
     }
   } )
@@ -96,8 +96,6 @@ function App() {
   // an observer to determine user's authentication status
   onAuthStateChanged(FBauth, (user) => {
     if (user) {
-      // visitor is authenticated
-      // console.log(user)
       setAuth(user)
       setNav(NavDataAuth)
     }
@@ -118,7 +116,6 @@ function App() {
       dbItems.push( item )
     })
     setData( dbItems )
-    console.log( dbItems )
     // return dbItems
   }
 
