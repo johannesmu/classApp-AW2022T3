@@ -4,7 +4,6 @@ export function Home(props) {
 
   useEffect(() => {
     setPageData(props.listData)
-    console.log( props.listData )
   })
 
   if (pageData.length > 0) {
