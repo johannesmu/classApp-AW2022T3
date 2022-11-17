@@ -11,6 +11,7 @@ export function Home(props) {
       return (
         <div className="col-md-4" key={key}>
           <div className="card">
+          <Image urlgetter={ props.imageGetter } imgPath={"book_covers/" + item.Cover} />
             <div className="card-body">
               <h5 className="card-title">{item.Title}</h5>
             </div>
@@ -30,6 +31,30 @@ export function Home(props) {
   else {
     return (
       <div className="container"></div>
+    )
+  }
+}
+
+
+function Image( props ) {
+  const [imageURL,setImageURL] = useState()
+
+  useEffect( () => {
+    if( !imageURL ) {
+      props.urlgetter( props.imgPath )
+      .then((url) => setImageURL(url) )
+      .catch( (error) => console.log(error) )
+    }
+  })
+
+  if( imageURL ) {
+    return (
+      <img src={imageURL} className="card-img-top" alt={props.Title} />
+    )
+  }
+  else {
+    return (
+      <div>Loading...</div>
     )
   }
 }

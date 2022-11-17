@@ -29,6 +29,8 @@ import {
   signOut
 }
   from "firebase/auth"
+// import firebase storage
+import { getStorage, ref, getDownloadURL } from "firebase/storage"
 
 // initialise Firebase
 const FBapp = initializeApp(FirebaseConfig)
@@ -36,6 +38,8 @@ const FBapp = initializeApp(FirebaseConfig)
 const FBauth = getAuth(FBapp)
 // initialise FireStore Database
 const FBdb = getFirestore(FBapp)
+// initialise Firebase Storage
+const FBstorage = getStorage()
 
 
 // function to create user account
@@ -88,7 +92,7 @@ function App() {
   const [ data, setData ] = useState([])
 
   useEffect( () => {
-    if( data.length == 0 ) {
+    if( data.length === 0 ) {
       getDataCollection('books')
     }
   } )
@@ -96,8 +100,6 @@ function App() {
   // an observer to determine user's authentication status
   onAuthStateChanged(FBauth, (user) => {
     if (user) {
-      // visitor is authenticated
-      // console.log(user)
       setAuth(user)
       setNav(NavDataAuth)
     }
@@ -118,8 +120,19 @@ function App() {
       dbItems.push( item )
     })
     setData( dbItems )
-    console.log( dbItems )
     // return dbItems
+  }
+
+  const getImageURL = (path) => {
+    // create a reference to image in the path
+    const ImageRef = ref( FBstorage, path )
+    return new Promise(( resolve, reject ) => {
+      getDownloadURL( ImageRef )
+      .then((url) =>{ 
+        resolve(url)
+      } )
+      .catch((error) => reject(error) )
+    })
   }
 
   
@@ -128,7 +141,7 @@ function App() {
     <div className="App">
       <Header title="My app" headernav={nav} />
       <Routes>
-        <Route path="/" element={<Home listData={ data } />} />
+        <Route path="/" element={<Home listData={ data } imageGetter={getImageURL} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<Signup handler={signup} />} />
