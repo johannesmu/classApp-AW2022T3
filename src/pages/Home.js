@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import {Link} from 'react-router-dom'
+
 export function Home(props) {
   const [pageData, setPageData] = useState([])
 
@@ -11,9 +13,10 @@ export function Home(props) {
       return (
         <div className="col-md-4" key={key}>
           <div className="card">
-          <Image urlgetter={ props.imageGetter } imgPath={"book_covers/" + item.Cover} />
+            <Image urlgetter={ props.imageGetter } imgPath={"book_covers/" + item.Cover} />
             <div className="card-body">
               <h5 className="card-title">{item.Title}</h5>
+              <Link to={"/book/" + item.id}>Detail</Link>
             </div>
           </div>
         </div>

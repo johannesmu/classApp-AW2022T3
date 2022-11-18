@@ -10,6 +10,7 @@ import { About } from './pages/About'
 import { Signup } from './pages/Signup'
 import { Signout } from './pages/Signout'
 import { Signin } from './pages/Signin'
+import { Detail } from './pages/Detail'
 
 // import firebase
 import { initializeApp } from "firebase/app"
@@ -147,6 +148,7 @@ function App() {
         <Route path="/signup" element={<Signup handler={signup} />} />
         <Route path="/signout" element={<Signout handler={signoutuser} auth={auth} />} />
         <Route path="/signin" element={<Signin handler={signin} />} />
+        <Route path="/book/:bookId" element={<Detail />} />
       </Routes>
       <Footer year="2022" />
     </div>
