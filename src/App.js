@@ -10,6 +10,7 @@ import { About } from './pages/About'
 import { Signup } from './pages/Signup'
 import { Signout } from './pages/Signout'
 import { Signin } from './pages/Signin'
+import { Detail } from './pages/Detail'
 
 // import firebase
 import { initializeApp } from "firebase/app"
@@ -18,7 +19,9 @@ import { FirebaseConfig } from './config/FirebaseConfig'
 import { 
   getFirestore, 
   getDocs, 
-  collection 
+  collection,
+  doc,
+  getDoc 
 } from "firebase/firestore";
 // import firebase auth
 import {
@@ -29,6 +32,8 @@ import {
   signOut
 }
   from "firebase/auth"
+// import firebase storage
+import { getStorage, ref, getDownloadURL } from "firebase/storage"
 
 // initialise Firebase
 const FBapp = initializeApp(FirebaseConfig)
@@ -36,6 +41,8 @@ const FBapp = initializeApp(FirebaseConfig)
 const FBauth = getAuth(FBapp)
 // initialise FireStore Database
 const FBdb = getFirestore(FBapp)
+// initialise Firebase Storage
+const FBstorage = getStorage()
 
 
 // function to create user account
@@ -119,22 +126,48 @@ function App() {
     // return dbItems
   }
 
+  const getImageURL = (path) => {
+    // create a reference to image in the path
+    const ImageRef = ref( FBstorage, path )
+    return new Promise(( resolve, reject ) => {
+      getDownloadURL( ImageRef )
+      .then((url) =>{ 
+        resolve(url)
+      } )
+      .catch((error) => reject(error) )
+    })
+  }
+
+  const getDocument = async ( col, id ) => {
+    const docRef = doc( FBdb, col, id )
+    const docData = await getDoc( docRef )
+    if( docData.exists() ) {
+      return docData.data()
+    }
+    else {
+      return null
+    }
+  }
+
   
 
   return (
     <div className="App">
       <Header title="My app" headernav={nav} />
       <Routes>
-        <Route path="/" element={<Home listData={ data } />} />
+        <Route path="/" element={<Home listData={ data } imageGetter={getImageURL} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<Signup handler={signup} />} />
         <Route path="/signout" element={<Signout handler={signoutuser} auth={auth} />} />
         <Route path="/signin" element={<Signin handler={signin} />} />
+        <Route path="/book/:bookId" element={<Detail getter={ getDocument} />} />
       </Routes>
       <Footer year="2022" />
     </div>
   );
 }
+
+//hello there
 
 export default App;
