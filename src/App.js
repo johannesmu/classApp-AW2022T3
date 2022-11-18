@@ -19,7 +19,9 @@ import { FirebaseConfig } from './config/FirebaseConfig'
 import { 
   getFirestore, 
   getDocs, 
-  collection 
+  collection,
+  doc,
+  getDoc 
 } from "firebase/firestore";
 // import firebase auth
 import {
@@ -136,6 +138,17 @@ function App() {
     })
   }
 
+  const getDocument = async ( col, id ) => {
+    const docRef = doc( FBdb, col, id )
+    const docData = await getDoc( docRef )
+    if( docData.exists() ) {
+      return docData.data()
+    }
+    else {
+      return null
+    }
+  }
+
   
 
   return (
@@ -148,7 +161,7 @@ function App() {
         <Route path="/signup" element={<Signup handler={signup} />} />
         <Route path="/signout" element={<Signout handler={signoutuser} auth={auth} />} />
         <Route path="/signin" element={<Signin handler={signin} />} />
-        <Route path="/book/:bookId" element={<Detail />} />
+        <Route path="/book/:bookId" element={<Detail getter={ getDocument} />} />
       </Routes>
       <Footer year="2022" />
     </div>
