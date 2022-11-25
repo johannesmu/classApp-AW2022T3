@@ -165,6 +165,7 @@ function App() {
         <Route path="/signout" element={<Signout handler={signoutuser} auth={auth} />} />
         <Route path="/signin" element={<Signin handler={signin} />} />
         <Route path="/book/:bookId" element={<Detail getter={ getDocument} />} />
+        <Route path="/dashboard" element={ <Dashboard auth={auth}/> } />
       </Routes>
       <Footer year="2022" />
     </div>
