@@ -11,6 +11,9 @@ import { Signup } from './pages/Signup'
 import { Signout } from './pages/Signout'
 import { Signin } from './pages/Signin'
 import { Detail } from './pages/Detail'
+// special components
+import { Dashboard } from './components/admin/Dashboard';
+import { ItemForm } from './components/test/ItemForm';
 
 // import firebase
 import { initializeApp } from "firebase/app"
