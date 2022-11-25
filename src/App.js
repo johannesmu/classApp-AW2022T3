@@ -22,7 +22,11 @@ import {
   collection,
   doc,
   getDoc,
-  setDoc
+  setDoc,
+  addDoc,
+  query,
+  onSnapshot,
+  where
 } from "firebase/firestore";
 // import firebase auth
 import {
@@ -174,7 +178,29 @@ function App() {
     }
   }
 
+  const addBookReview = async (bookId, reviewText, userId) => {
+    const path = "books/" + bookId + "/reviews"
+    const reviewObj = { BookId: bookId, User: userId, Text: reviewText }
+    const reviewRef = await addDoc( collection( FBdb, path), reviewObj )
+    if( reviewRef.id ) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
 
+  const getBookReviews = async ( bookId ) => {
+    const collectionStr = "books/" + bookId + "/reviews"
+    const reviewsQuery = query( collection(FBdb, collectionStr,  ) )
+    const unsubscribe = onSnapshot( reviewsQuery, (reviewsSnapshot) => {
+      let reviews = []
+      reviewsSnapshot.forEach( (review) => {
+        reviews.push( review.data() )
+      })
+      return reviews
+    })
+  }
 
   return (
     <div className="App">
@@ -193,6 +219,8 @@ function App() {
               getter={getDocument} 
               auth={auth} 
               imageGetter={getImageURL} 
+              addReview={ addBookReview }
+              getReviews={ getBookReviews }
             />
           } 
         />
