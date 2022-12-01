@@ -23,7 +23,7 @@ export function Detail(props) {
         event.preventDefault()
         const data = new FormData( event.target )
         props.addReview( data.get("bookId"), data.get("reviewtext"), data.get("userId") )
-        // .then((res) => console.log(res) )
+        .then((res) => console.log(res) )
     }
 
 
