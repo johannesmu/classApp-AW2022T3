@@ -69,6 +69,8 @@ function App() {
   const [nav, setNav] = useState(NavData)
   const [data, setData] = useState([])
   const [userData, setUserData] = useState()
+  // book reviews
+  const [bookReviews, setBookReviews] = useState([])
 
   useEffect(() => {
     if (data.length === 0) {
@@ -180,7 +182,7 @@ function App() {
 
   const addBookReview = async (bookId, reviewText, userId) => {
     const path = "books/" + bookId + "/reviews"
-    const reviewObj = { BookId: bookId, UserId: userId, Text: reviewText }
+    const reviewObj = { BookId: bookId, UserId: userId, Text: reviewText, Date: new Date() }
     const reviewRef = await addDoc( collection( FBdb, path), reviewObj )
     if( reviewRef.id ) {
       return true
@@ -192,13 +194,28 @@ function App() {
 
   const getBookReviews = async ( bookId ) => {
     const collectionStr = "books/" + bookId + "/reviews"
-    const reviewsQuery = query( collection(FBdb, collectionStr,  ) )
+    const reviewsQuery = query( collection(FBdb, collectionStr  ) )
     const unsubscribe = onSnapshot( reviewsQuery, (reviewsSnapshot) => {
       let reviews = []
       reviewsSnapshot.forEach( (review) => {
-        reviews.push( review.data() )
+        let reviewData = review.data()
+        // create a js date object from firebase
+        let dateData = reviewData.Date.toDate()
+        // get the year month and date
+        let year = dateData.getFullYear()
+        let month = dateData.getMonth() + 1
+        let date = dateData.getDate()
+        let hours = dateData.getHours()
+        let minutes = dateData.getMinutes()
+        // construct as a string
+        let dateStr = `${date}/${month}/${year} ${hours}:${minutes}`
+
+        reviewData.Date = dateStr
+
+        reviews.push( reviewData )
       })
-      return reviews
+      //return reviews
+      setBookReviews( reviews )
     })
   }
 
@@ -221,6 +238,7 @@ function App() {
               imageGetter={getImageURL} 
               addReview={ addBookReview }
               getReviews={ getBookReviews }
+              reviews={bookReviews}
             />
           } 
         />
