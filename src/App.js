@@ -19,12 +19,17 @@ import { ItemForm } from './components/test/ItemForm';
 import { initializeApp } from "firebase/app"
 import { FirebaseConfig } from './config/FirebaseConfig'
 // import firebase firestore
-import { 
-  getFirestore, 
-  getDocs, 
+import {
+  getFirestore,
+  getDocs,
   collection,
   doc,
-  getDoc 
+  getDoc,
+  setDoc,
+  addDoc,
+  query,
+  onSnapshot,
+  where
 } from "firebase/firestore";
 // import firebase auth
 import {
@@ -47,36 +52,6 @@ const FBdb = getFirestore(FBapp)
 // initialise Firebase Storage
 const FBstorage = getStorage()
 
-
-// function to create user account
-const signup = (email, password) => {
-  return new Promise((resolve, reject) => {
-    createUserWithEmailAndPassword(FBauth, email, password)
-      .then((userCredential) => resolve(userCredential.user))
-      .catch((error) => {
-        // console.log(error)
-        reject(error)
-      })
-  })
-}
-
-const signin = (email, password ) => {
-  return new Promise( ( resolve, reject ) => {
-    signInWithEmailAndPassword( FBauth, email, password )
-      .then((userCredential) => resolve(userCredential.user) )
-      .catch( (error) => reject(error) )
-  } )
-}
-
-const signoutuser = () => {
-  return new Promise((resolve, reject) => {
-    signOut(FBauth)
-      .then(() => resolve(true))
-      .catch((error) => reject(error))
-  })
-
-}
-
 const NavData = [
   { name: "Home", path: "/", public: true },
   { name: "About", path: "/about", public: true },
@@ -95,13 +70,18 @@ const NavDataAuth = [
 function App() {
   const [auth, setAuth] = useState()
   const [nav, setNav] = useState(NavData)
-  const [ data, setData ] = useState([])
+  const [data, setData] = useState([])
+  const [userData, setUserData] = useState()
 
-  useEffect( () => {
-    if( data.length === 0 ) {
+  useEffect(() => {
+    if (data.length === 0) {
       getDataCollection('books')
     }
-  } )
+  })
+
+  useEffect(() => {
+    console.log( userData )
+  }, [userData])
 
   // an observer to determine user's authentication status
   onAuthStateChanged(FBauth, (user) => {
@@ -114,37 +94,86 @@ function App() {
       // console.log('not signed in')
       setAuth(null)
       setNav(NavData)
+      setUserData(null)
     }
   })
 
-  const getDataCollection = async ( path ) => {
-    const collectionData = await getDocs( collection(FBdb, path ) )
+  // auth functions
+  // function to create user account
+  const signup = (username, email, password) => {
+    return new Promise((resolve, reject) => {
+      createUserWithEmailAndPassword(FBauth, email, password)
+        .then(async (userCredential) => {
+          const uid = userCredential.user.uid
+          // write username to database
+          // create user data object
+          const userObj = {
+            name: username,
+            profileImg: "default.png"
+          }
+          await setDoc(doc(FBdb, "users", uid), userObj )
+          setUserData( userObj )
+          resolve(userCredential.user)
+        })
+        .catch((error) => {
+          // console.log(error)
+          reject(error)
+        })
+    })
+  }
+
+  const signin = (email, password) => {
+    return new Promise((resolve, reject) => {
+      signInWithEmailAndPassword(FBauth, email, password)
+        .then( async (userCredential) => {
+          const uid = userCredential.user.uid
+          // read user data from firestore
+          const docRef = doc(FBdb, "users", uid)
+          const docData = await getDoc(docRef)
+          setUserData( docData.data() )
+          resolve(userCredential.user)
+        })
+        .catch((error) => reject(error))
+    })
+  }
+
+  const signoutuser = () => {
+    return new Promise((resolve, reject) => {
+      signOut(FBauth)
+        .then(() => resolve(true))
+        .catch((error) => reject(error))
+    })
+
+  }
+
+  const getDataCollection = async (path) => {
+    const collectionData = await getDocs(collection(FBdb, path))
     let dbItems = []
-    collectionData.forEach( (doc) => {
+    collectionData.forEach((doc) => {
       let item = doc.data()
       item.id = doc.id
-      dbItems.push( item )
+      dbItems.push(item)
     })
-    setData( dbItems )
+    setData(dbItems)
     // return dbItems
   }
 
   const getImageURL = (path) => {
     // create a reference to image in the path
-    const ImageRef = ref( FBstorage, path )
-    return new Promise(( resolve, reject ) => {
-      getDownloadURL( ImageRef )
-      .then((url) =>{ 
-        resolve(url)
-      } )
-      .catch((error) => reject(error) )
+    const ImageRef = ref(FBstorage, path)
+    return new Promise((resolve, reject) => {
+      getDownloadURL(ImageRef)
+        .then((url) => {
+          resolve(url)
+        })
+        .catch((error) => reject(error))
     })
   }
 
-  const getDocument = async ( col, id ) => {
-    const docRef = doc( FBdb, col, id )
-    const docData = await getDoc( docRef )
-    if( docData.exists() ) {
+  const getDocument = async (col, id) => {
+    const docRef = doc(FBdb, col, id)
+    const docData = await getDoc(docRef)
+    if (docData.exists()) {
       return docData.data()
     }
     else {
@@ -152,20 +181,52 @@ function App() {
     }
   }
 
-  
+  const addBookReview = async (bookId, reviewText, userId) => {
+    const path = "books/" + bookId + "/reviews"
+    const reviewObj = { BookId: bookId, User: userId, Text: reviewText }
+    const reviewRef = await addDoc( collection( FBdb, path), reviewObj )
+    if( reviewRef.id ) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
+
+  const getBookReviews = async ( bookId ) => {
+    const collectionStr = "books/" + bookId + "/reviews"
+    const reviewsQuery = query( collection(FBdb, collectionStr,  ) )
+    const unsubscribe = onSnapshot( reviewsQuery, (reviewsSnapshot) => {
+      let reviews = []
+      reviewsSnapshot.forEach( (review) => {
+        reviews.push( review.data() )
+      })
+      return reviews
+    })
+  }
 
   return (
     <div className="App">
-      <Header title="My app" headernav={nav} />
+      <Header title="My app" headernav={nav} user={userData} />
       <Routes>
-        <Route path="/" element={<Home listData={ data } imageGetter={getImageURL} />} />
+        <Route path="/" element={<Home listData={data} imageGetter={getImageURL} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<Signup handler={signup} />} />
         <Route path="/signout" element={<Signout handler={signoutuser} auth={auth} />} />
         <Route path="/signin" element={<Signin handler={signin} />} />
-        <Route path="/book/:bookId" element={<Detail getter={ getDocument} />} />
-        <Route path="/dashboard" element={ <Dashboard auth={auth}/> } />
+        <Route 
+          path="/book/:bookId" 
+          element={
+            <Detail 
+              getter={getDocument} 
+              auth={auth} 
+              imageGetter={getImageURL} 
+              addReview={ addBookReview }
+              getReviews={ getBookReviews }
+            />
+          } 
+        />
       </Routes>
       <Footer year="2022" />
     </div>
