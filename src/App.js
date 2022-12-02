@@ -88,6 +88,7 @@ function App() {
     if (user) {
       setAuth(user)
       setNav(NavDataAuth)
+      
     }
     else {
       // if user is null means visitor is not authenticated
@@ -126,11 +127,11 @@ function App() {
     return new Promise((resolve, reject) => {
       signInWithEmailAndPassword(FBauth, email, password)
         .then( async (userCredential) => {
-          const uid = userCredential.user.uid
-          // read user data from firestore
-          const docRef = doc(FBdb, "users", uid)
-          const docData = await getDoc(docRef)
-          setUserData( docData.data() )
+          //const uid = userCredential.user.uid
+          // // read user data from firestore
+          // const docRef = doc(FBdb, "users", uid)
+          // const docData = await getDoc(docRef)
+          // setUserData( docData.data() )
           resolve(userCredential.user)
         })
         .catch((error) => reject(error))
@@ -143,7 +144,12 @@ function App() {
         .then(() => resolve(true))
         .catch((error) => reject(error))
     })
-
+  }
+  // get user data
+  const getUserData = async (uid) => {
+    const docRef = doc(FBdb, "users", uid)
+    const docData = await getDoc(docRef)
+    setUserData( docData.data() )
   }
 
   const getDataCollection = async (path) => {

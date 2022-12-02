@@ -12,11 +12,13 @@ export function Home(props) {
     const itemCollection = pageData.map(( item, key ) => {
       return (
         <div className="col-md-4" key={key}>
-          <div className="card">
+          <div className="card position-relative">
             <Image urlgetter={ props.imageGetter } imgPath={"book_covers/" + item.Cover} />
             <div className="card-body">
               <h5 className="card-title">{item.Title}</h5>
-              <Link to={"/book/" + item.id}>Detail</Link>
+              <Link to={"/book/" + item.id} className="position-absolute w-100 h-100" style={{top:0,left:0}}>
+                <span className='visually-hidden'>View Detail</span>
+              </Link>
             </div>
           </div>
         </div>
