@@ -13,9 +13,9 @@ export function Reviews(props) {
         </div>
     }
     else {
-        const ReviewsCollection = reviews.map( (item) => {
+        const ReviewsCollection = reviews.map( (item, key ) => {
             return(
-                <div className="my-3">
+                <div className="my-3" key={key}>
                     <p>{item.Date}</p>
                     <p>{item.Text}</p>
                 </div>
