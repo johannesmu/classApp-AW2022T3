@@ -57,6 +57,13 @@ export function Home(props) {
 function Image( props ) {
   const [imageURL,setImageURL] = useState()
 
+  const ImageLoadingStyle = {
+    display: "grid",
+    aspectRatio: "3/4",
+    backgroundColor: "#CCCCCC",
+    placeItems: "center"
+  }
+
   useEffect( () => {
     if( !imageURL ) {
       props.urlgetter( props.imgPath )
@@ -72,7 +79,7 @@ function Image( props ) {
   }
   else {
     return (
-      <div>Loading...</div>
+      <div style={ImageLoadingStyle}>Loading...</div>
     )
   }
 }

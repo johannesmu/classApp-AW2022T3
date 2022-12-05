@@ -84,6 +84,7 @@ export function Detail(props) {
         </div>
         <div className="row">
           <div className="col">
+            <h2>Reviews</h2>
             <Reviews reviews={bookReviews} />
           </div>
         </div>
@@ -100,6 +101,13 @@ export function Detail(props) {
 function DetailImage(props) {
   const [imgUrl, setImgUrl] = useState()
 
+  const ImageLoadingStyle = {
+    display: "grid",
+    aspectRatio: "3/4",
+    backgroundColor: "#CCCCCC",
+    placeItems: "center"
+  }
+
   useEffect(() => {
     if (props.data) {
       props.getter("book_covers/" + props.data.Cover)
@@ -113,7 +121,11 @@ function DetailImage(props) {
     )
   }
   else {
-    return <p>Loading...</p>
+    return (
+    <div style={ImageLoadingStyle}>
+        <p>Loading...</p>
+    </div>
+    )
   }
 }
 

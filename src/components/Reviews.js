@@ -5,12 +5,15 @@ export function Reviews(props) {
 
     useEffect(() => {
         setReviews(props.reviews)
+        console.log( reviews.length )
     }, [props.reviews])
 
     if (reviews.length == 0) {
-        <div className="reviews">
-            <p>There are currently no reviews for this book</p>
-        </div>
+        return (
+            <div className="reviews my-3">
+                <p>There are currently no reviews for this book</p>
+            </div>
+        )
     }
     else {
         const ReviewsCollection = reviews.map( (item, key ) => {
