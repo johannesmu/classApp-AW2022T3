@@ -20,7 +20,7 @@ export function Header(props) {
                 <Link className="navbar-brand" to="/">{ props.title }</Link>
                 <div className="collapse navbar-collapse">
                     <Navigation items={ props.headernav } />
-                    <p className="navbar-brand">{ name }</p>
+                    <p className="navbar-text nav-link">{ name }</p>
                 </div>
 
             </div>

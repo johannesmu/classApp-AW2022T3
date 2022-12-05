@@ -78,15 +78,18 @@ function App() {
     }
   })
 
-  useEffect(() => {
-    console.log( userData )
-  }, [userData])
+  // useEffect(() => {
+  //   if(!userData) {
+  //     getUserData()
+  //   }
+  // }, [userData])
 
   // an observer to determine user's authentication status
   onAuthStateChanged(FBauth, (user) => {
     if (user) {
       setAuth(user)
       setNav(NavDataAuth)
+      getUserData( user.uid )
     }
     else {
       // if user is null means visitor is not authenticated
@@ -110,8 +113,8 @@ function App() {
             name: username,
             profileImg: "default.png"
           }
-          await setDoc(doc(FBdb, "users", uid), userObj )
-          setUserData( userObj )
+          await setDoc(doc(FBdb, "users", uid), userObj)
+          setUserData(userObj)
           resolve(userCredential.user)
         })
         .catch((error) => {
@@ -124,12 +127,13 @@ function App() {
   const signin = (email, password) => {
     return new Promise((resolve, reject) => {
       signInWithEmailAndPassword(FBauth, email, password)
-        .then( async (userCredential) => {
+        .then(async (userCredential) => {
           const uid = userCredential.user.uid
           // read user data from firestore
-          const docRef = doc(FBdb, "users", uid)
-          const docData = await getDoc(docRef)
-          setUserData( docData.data() )
+          // const docRef = doc(FBdb, "users", uid)
+          // const docData = await getDoc(docRef)
+          // setUserData(docData.data())
+          getUserData(uid)
           resolve(userCredential.user)
         })
         .catch((error) => reject(error))
@@ -143,6 +147,12 @@ function App() {
         .catch((error) => reject(error))
     })
 
+  }
+
+  const getUserData = async (uid) => {
+    const docRef = doc(FBdb, "users", uid)
+    const docData = await getDoc(docRef)
+    setUserData(docData.data())
   }
 
   const getDataCollection = async (path) => {
@@ -183,8 +193,8 @@ function App() {
   const addBookReview = async (bookId, reviewText, userId) => {
     const path = "books/" + bookId + "/reviews"
     const reviewObj = { BookId: bookId, UserId: userId, Text: reviewText, Date: new Date() }
-    const reviewRef = await addDoc( collection( FBdb, path), reviewObj )
-    if( reviewRef.id ) {
+    const reviewRef = await addDoc(collection(FBdb, path), reviewObj)
+    if (reviewRef.id) {
       return true
     }
     else {
@@ -192,12 +202,12 @@ function App() {
     }
   }
 
-  const getBookReviews = async ( bookId ) => {
+  const getBookReviews = async (bookId) => {
     const collectionStr = "books/" + bookId + "/reviews"
-    const reviewsQuery = query( collection(FBdb, collectionStr  ) )
-    const unsubscribe = onSnapshot( reviewsQuery, (reviewsSnapshot) => {
+    const reviewsQuery = query(collection(FBdb, collectionStr))
+    const unsubscribe = onSnapshot(reviewsQuery, (reviewsSnapshot) => {
       let reviews = []
-      reviewsSnapshot.forEach( (review) => {
+      reviewsSnapshot.forEach((review) => {
         let reviewData = review.data()
         // create a js date object from firebase
         let dateData = reviewData.Date.toDate()
@@ -212,14 +222,14 @@ function App() {
 
         reviewData.Date = dateStr
 
-        reviews.push( reviewData )
+        reviews.push(reviewData)
       })
       //return reviews
-      setBookReviews( reviews )
+      setBookReviews(reviews)
     })
   }
 
- 
+
 
   return (
     <div className="App">
@@ -231,18 +241,18 @@ function App() {
         <Route path="/signup" element={<Signup handler={signup} />} />
         <Route path="/signout" element={<Signout handler={signoutuser} auth={auth} />} />
         <Route path="/signin" element={<Signin handler={signin} />} />
-        <Route 
-          path="/book/:bookId" 
+        <Route
+          path="/book/:bookId"
           element={
-            <Detail 
-              getter={getDocument} 
-              auth={auth} 
-              imageGetter={getImageURL} 
-              addReview={ addBookReview }
-              getReviews={ getBookReviews }
+            <Detail
+              getter={getDocument}
+              auth={auth}
+              imageGetter={getImageURL}
+              addReview={addBookReview}
+              getReviews={getBookReviews}
               reviews={bookReviews}
             />
-          } 
+          }
         />
       </Routes>
       <Footer year="2022" />
