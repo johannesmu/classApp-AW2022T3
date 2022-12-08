@@ -214,8 +214,8 @@ function App() {
 
         reviews.push( reviewData )
       })
-      //return reviews
-      setBookReviews( reviews )
+      return reviews
+      //setBookReviews( reviews )
     })
   }
 
@@ -240,7 +240,7 @@ function App() {
               imageGetter={getImageURL} 
               addReview={ addBookReview }
               getReviews={ getBookReviews }
-              reviews={bookReviews}
+              //reviews={bookReviews}
             />
           } 
         />
