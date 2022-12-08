@@ -7,16 +7,31 @@ export function Home(props) {
   useEffect(() => {
     setPageData(props.listData)
   })
+  // inline styles for the row
+  // flexible grid from https://css-tricks.com/books/greatest-css-tricks/flexible-grids/
+  const styles = {
+    display: "grid",
+    // gridTemplateColumns: "1fr 1fr 1fr",
+    // flexible grid
+    gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+    gap: "20px"
+  }
 
   if (pageData.length > 0) {
     const itemCollection = pageData.map(( item, key ) => {
       return (
-        <div className="col-md-4" key={key}>
-          <div className="card">
+        <div className="d-flex" key={key}>
+          <div className="card position-relative w-100 h-100">
             <Image urlgetter={ props.imageGetter } imgPath={"book_covers/" + item.Cover} />
-            <div className="card-body">
+            <div className="card-body d-flex flex-column justify-content-end">
               <h5 className="card-title">{item.Title}</h5>
-              <Link to={"/book/" + item.id}>Detail</Link>
+              <Link 
+                to={"/book/" + item.id} 
+                className="position-absolute w-100 h-100 d-block"
+                style={{top:"0px", left: "0px"}}
+              >
+                <span className="visually-hidden">Detail</span>
+              </Link>
             </div>
           </div>
         </div>
@@ -25,7 +40,7 @@ export function Home(props) {
 
     return (
       <div className="container my-4">
-        <div className="row">
+        <div style={styles}>
           {itemCollection}
         </div>
       </div>
@@ -42,6 +57,13 @@ export function Home(props) {
 function Image( props ) {
   const [imageURL,setImageURL] = useState()
 
+  const ImageLoadingStyle = {
+    display: "grid",
+    aspectRatio: "3/4",
+    backgroundColor: "#CCCCCC",
+    placeItems: "center"
+  }
+
   useEffect( () => {
     if( !imageURL ) {
       props.urlgetter( props.imgPath )
@@ -52,12 +74,12 @@ function Image( props ) {
 
   if( imageURL ) {
     return (
-      <img src={imageURL} className="card-img-top" alt={props.Title} />
+      <img src={imageURL} className="card-img-top w-100" alt={props.Title} />
     )
   }
   else {
     return (
-      <div>Loading...</div>
+      <div style={ImageLoadingStyle}>Loading...</div>
     )
   }
 }

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import { useState, useEffect } from 'react'
 
-import {Reviews} from "../components/Reviews"
+import { Reviews } from "../components/Reviews"
 
 export function Detail(props) {
   const [bookData, setBookData] = useState()
@@ -20,8 +20,8 @@ export function Detail(props) {
 
   // fetch book reviews
   useEffect(() => {
-    if(bookReviews.length == 0) {
-      props.getReviews( bookId )
+    if (bookReviews.length == 0) {
+      props.getReviews(bookId)
     }
   }, [bookData])
 
@@ -48,20 +48,33 @@ export function Detail(props) {
           </div>
         </div>
         <div className="row">
-          <div className="col">
+          <div className="col-md-6">
             <DetailImage data={bookData} getter={props.imageGetter} />
           </div>
-          <div className="col">
-            <h4>Author</h4>
-            <p>{bookData.Author}</p>
-            <h5>ISBN 10</h5>
-            <p>{bookData.ISBN10}</p>
-            <h5>ISBN 13</h5>
-            <p>{bookData.ISBN13}</p>
-            <h5>Pages</h5>
-            <p>{bookData.Pages}</p>
-            <h5>Year</h5>
-            <p>{bookData.Year}</p>
+          <div className="col-md-6">
+            <div className="row">
+              <div className="col-md-6">
+                <h4>Author</h4>
+                <p>{bookData.Author}</p>
+                <h5>ISBN 10</h5>
+                <p>{bookData.ISBN10}</p>
+                <h5>ISBN 13</h5>
+                <p>{bookData.ISBN13}</p>
+              </div>
+              <div className="col-md-6">
+                <h5>Pages</h5>
+                <p>{bookData.Pages}</p>
+                <h5>Year</h5>
+                <p>{bookData.Year}</p>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col">
+                {bookData.Summary}
+              </div>
+            </div>
+
+
             <div style={(props.auth) ? { display: "block" } : { display: "none" }}>
               {/* <button className="btn btn-info">Add to Favourites</button> */}
               <form method="post" onSubmit={reviewSubmitHandler}>
@@ -84,6 +97,7 @@ export function Detail(props) {
         </div>
         <div className="row">
           <div className="col">
+            <h2>Reviews</h2>
             <Reviews reviews={bookReviews} />
           </div>
         </div>
@@ -100,6 +114,13 @@ export function Detail(props) {
 function DetailImage(props) {
   const [imgUrl, setImgUrl] = useState()
 
+  const ImageLoadingStyle = {
+    display: "grid",
+    aspectRatio: "3/4",
+    backgroundColor: "#CCCCCC",
+    placeItems: "center"
+  }
+
   useEffect(() => {
     if (props.data) {
       props.getter("book_covers/" + props.data.Cover)
@@ -113,7 +134,11 @@ function DetailImage(props) {
     )
   }
   else {
-    return <p>Loading...</p>
+    return (
+      <div style={ImageLoadingStyle}>
+        <p>Loading...</p>
+      </div>
+    )
   }
 }
 
