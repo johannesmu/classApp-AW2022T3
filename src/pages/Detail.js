@@ -21,14 +21,11 @@ export function Detail(props) {
   // fetch book reviews
   useEffect(() => {
     if (bookReviews.length == 0) {
-      props.getReviews(bookId)
+      let reviews = props.getReviews(bookId)
+      console.log(reviews)
     }
   }, [bookData])
 
-  // set book review from props
-  useEffect(() => {
-    setBookReviews(props.reviews)
-  }, [props.reviews])
 
   const reviewSubmitHandler = (event) => {
     event.preventDefault()

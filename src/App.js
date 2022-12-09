@@ -203,29 +203,35 @@ function App() {
   }
 
   const getBookReviews = async (bookId) => {
+    // path to review collection is books/bookId/reviews
     const collectionStr = "books/" + bookId + "/reviews"
-    const reviewsQuery = query(collection(FBdb, collectionStr))
-    const unsubscribe = onSnapshot(reviewsQuery, (reviewsSnapshot) => {
-      let reviews = []
-      reviewsSnapshot.forEach((review) => {
-        let reviewData = review.data()
-        // create a js date object from firebase
-        let dateData = reviewData.Date.toDate()
-        // get the year month and date
-        let year = dateData.getFullYear()
-        let month = dateData.getMonth() + 1
-        let date = dateData.getDate()
-        let hours = dateData.getHours()
-        let minutes = dateData.getMinutes()
-        // construct as a string
-        let dateStr = `${date}/${month}/${year} ${hours}:${minutes}`
+    const reviewSnapshot = await getDocs( collection(FBdb, collectionStr ))
+    reviewSnapshot.forEach( (review) => {
+      
+    })
+    // const reviewsQuery = query(collection(FBdb, collectionStr))
+    // const unsubscribe = onSnapshot(reviewsQuery, (reviewsSnapshot) => {
+    //   let reviews = []
+    //   reviewsSnapshot.forEach((review) => {
+    //     let reviewData = review.data()
+    //     // create a js date object from firebase
+    //     let dateData = reviewData.Date.toDate()
+    //     // get the year month and date
+    //     let year = dateData.getFullYear()
+    //     let month = dateData.getMonth() + 1
+    //     let date = dateData.getDate()
+    //     let hours = dateData.getHours()
+    //     let minutes = dateData.getMinutes()
+    //     // construct as a string
+    //     let dateStr = `${date}/${month}/${year} ${hours}:${minutes}`
 
-        reviewData.Date = dateStr
+    //     reviewData.Date = dateStr
 
-        reviews.push(reviewData)
-      })
-      //return reviews
-      setBookReviews(reviews)
+    //     reviews.push(reviewData)
+    //   })
+    //   console.log( reviews )
+    //   return reviews
+    //   //setBookReviews(reviews)
     })
   }
 
@@ -250,7 +256,7 @@ function App() {
               imageGetter={getImageURL}
               addReview={addBookReview}
               getReviews={getBookReviews}
-              reviews={bookReviews}
+              //reviews={bookReviews}
             />
           }
         />
